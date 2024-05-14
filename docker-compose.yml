@@ -1,0 +1,26 @@
+version: '3'
+services:
+  db:
+    image: postgres:13
+    logging:
+      driver: none
+    environment:
+      POSTGRES_DB: ${DB_DATABASE}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - .docker-compose/db:/var/lib/postgresql/data
+    ports:
+      - '${DB_PORT}:5432'
+  app_dev:
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+      target: devRunner
+    command: sh -c "yarn start:dev"
+    volumes:
+      - .:/app
+    ports:
+      - "${APP_PORT}:${APP_PORT}"
+    depends_on:
+      - db
