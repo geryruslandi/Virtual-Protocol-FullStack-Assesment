@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDTO, RegisterDTO } from '@api/auth/auth.dto';
 import * as bcrypt from 'bcrypt';
 import { DatabaseService } from '@libs/database';
 import { User } from '@libs/database/models/user.model';
 import { AppConfigService } from '@libs/app-config';
+import {
+  QUEUE_EVENTS,
+  QUEUE_SERVICES,
+} from '@libs/message-broker/message-broker.enum';
+import { ClientProxy } from '@nestjs/microservices';
+import { GenerateMatchCandidateDTO } from '@libs/message-broker/message-broker.dto';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +18,8 @@ export class AuthService {
     private db: DatabaseService,
     private config: AppConfigService,
     private jwt: JwtService,
+    @Inject(QUEUE_SERVICES.API)
+    private readonly queue: ClientProxy,
   ) {}
 
   async registerUser(data: RegisterDTO): Promise<User> {
@@ -25,6 +33,10 @@ export class AuthService {
       ...data,
       password: hashedPassword,
     });
+
+    this.queue.emit({ cmd: QUEUE_EVENTS.GENERATE_MATCH_CANDIDATE }, {
+      userId: user.id,
+    } as GenerateMatchCandidateDTO);
 
     return user;
   }

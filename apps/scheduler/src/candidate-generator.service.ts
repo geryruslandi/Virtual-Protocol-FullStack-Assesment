@@ -1,4 +1,3 @@
-import { AppConfigService } from '@libs/app-config';
 import { DatabaseService } from '@libs/database';
 import { GenerateMatchCandidateDTO } from '@libs/message-broker/message-broker.dto';
 import {

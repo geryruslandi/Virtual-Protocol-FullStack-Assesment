@@ -9,4 +9,5 @@ export enum QUEUE_NAMES {
 export enum QUEUE_SERVICES {
   SCHEDULER = 'scheduler',
   WORKER = 'worker',
+  API = 'api',
 }
