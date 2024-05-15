@@ -38,10 +38,6 @@ export class MatchesCandidateGenerator {
     this.weightConfig.interests = parseFloat(
       config.get('MATCHES_WEIGHT_INTERESTS'),
     );
-
-    setTimeout(() => {
-      this.populateMatches();
-    }, 2000);
   }
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)

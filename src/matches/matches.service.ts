@@ -1,25 +1,35 @@
 import { Injectable } from '@nestjs/common';
-import { InjectModel } from '@nestjs/sequelize';
+import { SwipeEnum } from '@src/matches/matches.enum';
 import { User } from '@src/models/user.model';
-import { Op } from 'sequelize';
+import * as moment from 'moment';
 
 @Injectable()
 export class MatchesService {
-  constructor(
-    @InjectModel(User)
-    private userModel: typeof User,
-  ) {}
-
   async getTodaysMatches(user: User) {
-    const users = await this.userModel.findAll({
+    const today = moment().format('DD-MM-YYYY');
+    const matchCandidates = await user.$get('matchCandidates', {
       where: {
-        id: {
-          [Op.ne]: user.id,
-        },
+        date: today,
+        status: 'pending',
       },
-      limit: 10,
+      include: ['candidate'],
     });
 
-    return users;
+    return matchCandidates;
+  }
+
+  async swipe(user: User, matchId: string, swipe: SwipeEnum) {
+    const matches = await user.$get('matchCandidates', {
+      where: { id: matchId, status: SwipeEnum.PENDING },
+    });
+
+    if (matches.length === 0) {
+      return;
+    }
+
+    const match = matches[0];
+
+    match.status = swipe;
+    await match.save();
   }
 }

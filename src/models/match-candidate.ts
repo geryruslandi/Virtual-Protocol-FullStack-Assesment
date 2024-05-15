@@ -29,6 +29,6 @@ export class MatchCandidate extends Model {
   @BelongsTo(() => User)
   user!: User;
 
-  @BelongsTo(() => User)
+  @BelongsTo(() => User, 'candidate_id')
   candidate!: User;
 }
