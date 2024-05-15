@@ -22,4 +22,11 @@ export class ResponseService {
   unathorized(res: Response, message: string) {
     return this.response(res, message, {}, 401);
   }
+
+  simpleRes(data: any = {}, message: string = 'Success') {
+    return {
+      data,
+      message,
+    };
+  }
 }

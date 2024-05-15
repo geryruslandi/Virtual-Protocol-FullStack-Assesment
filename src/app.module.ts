@@ -6,6 +6,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@src/models/user.model';
 import { UtilsModule } from '@src/utils/utils.module';
+import { MatchesModule } from '@src/matches/matches.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UtilsModule } from '@src/utils/utils.module';
       }),
     }),
     UtilsModule,
+    MatchesModule,
   ],
   controllers: [AppController],
   providers: [AppService],
