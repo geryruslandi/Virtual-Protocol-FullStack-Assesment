@@ -17,7 +17,7 @@ services:
       context: ./
       dockerfile: ./docker/Dockerfile
       target: devRunner
-    command: sh -c "yarn start:dev"
+    command: sh -c "yarn install && yarn start:dev"
     volumes:
       - .:/app
     ports:

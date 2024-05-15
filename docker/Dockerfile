@@ -1,16 +1,16 @@
-FROM node:18-alpine AS deps
+FROM node:20-alpine AS deps
 WORKDIR /app
 
 COPY package.json yarn.lock ./
 RUN yarn install
 
-FROM node:18-alpine AS builder
+FROM node:20-alpine AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN yarn build
 
-FROM node:18-alpine AS runner
+FROM node:20-alpine AS runner
 
 ENV NODE_ENV production
 WORKDIR /app
@@ -34,7 +34,7 @@ EXPOSE 3000
 
 CMD [ "yarn", "start:prod" ]
 
-FROM node:18-alpine AS jestTest
+FROM node:20-alpine AS jestTest
 
 ENV NODE_ENV test
 WORKDIR /app
@@ -45,13 +45,12 @@ COPY . ./
 CMD [ "yarn", "test" ]
 
 
-FROM node:18-alpine AS devRunner
+FROM node:20-alpine AS devRunner
 
 ENV NODE_ENV development
 WORKDIR /app
 
 COPY . .
-RUN yarn install
 
 EXPOSE ${APP_PORT}
 
