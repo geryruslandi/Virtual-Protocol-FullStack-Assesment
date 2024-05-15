@@ -7,10 +7,15 @@ import { SequelizeModule } from '@nestjs/sequelize';
 import { User } from '@src/models/user.model';
 import { UtilsModule } from '@src/utils/utils.module';
 import { MatchesModule } from '@src/matches/matches.module';
+import { ScheduleModule } from '@nestjs/schedule';
+import { SchedulerModule } from '@src/scheduler/scheduler.module';
+import { MatchCandidate } from '@src/models/match-candidate';
 
 @Module({
   imports: [
     AuthModule,
+    UtilsModule,
+    MatchesModule,
     ConfigModule.forRoot({ isGlobal: true }),
     SequelizeModule.forRootAsync({
       imports: [ConfigModule],
@@ -22,11 +27,11 @@ import { MatchesModule } from '@src/matches/matches.module';
         username: configService.get('DB_USER'),
         password: configService.get('DB_PASSWORD'),
         database: configService.get('DB_DATABASE'),
-        models: [User],
+        models: [User, MatchCandidate],
       }),
     }),
-    UtilsModule,
-    MatchesModule,
+    ScheduleModule.forRoot(),
+    SchedulerModule,
   ],
   controllers: [AppController],
   providers: [AppService],

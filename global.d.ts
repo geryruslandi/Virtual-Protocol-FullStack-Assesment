@@ -7,4 +7,7 @@ type ConfigType = {
   DB_HOST: string;
   HASH_SALT_ROUNDS: string;
   JWT_PRIVATE: string;
+  MATCHES_WEIGHT_LOCATION: string;
+  MATCHES_WEIGHT_UNIVERSITY: string;
+  MATCHES_WEIGHT_INTERESTS: string;
 };

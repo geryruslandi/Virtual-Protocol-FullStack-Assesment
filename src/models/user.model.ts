@@ -1,4 +1,5 @@
-import { Column, DataType, Model, Table } from 'sequelize-typescript';
+import { MatchCandidate } from '@src/models/match-candidate';
+import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
 @Table({ underscored: true })
 export class User extends Model {
@@ -22,6 +23,16 @@ export class User extends Model {
 
   @Column(DataType.ARRAY(DataType.STRING))
   interests: string[];
+
+  getOppositeGender() {
+    return this.gender === 'male' ? 'female' : 'male';
+  }
+
+  @HasMany(() => MatchCandidate, 'user_id')
+  matchCandidates!: MatchCandidate[];
+
+  @HasMany(() => MatchCandidate, 'candidate_id')
+  pickedAsCandidates!: MatchCandidate[];
 
   toJSON() {
     return {
