@@ -10,4 +10,9 @@ export type ConfigType = {
   MATCHES_WEIGHT_LOCATION: string;
   MATCHES_WEIGHT_UNIVERSITY: string;
   MATCHES_WEIGHT_INTERESTS: string;
+  RABBITMQ_DEFAULT_USER: string;
+  RABBITMQ_DEFAULT_PASS: string;
+  RABBITMQ_USER: string;
+  RABBITMQ_PASS: string;
+  RABBITMQ_HOST: string;
 };

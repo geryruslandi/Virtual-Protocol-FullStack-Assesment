@@ -1,10 +1,10 @@
+import { NestFactory } from '@nestjs/core';
+import { QueueWorkerModule } from './queue-worker.module';
 import { MessageBrokerService } from '@libs/message-broker';
 import { QUEUE_NAMES } from '@libs/message-broker/message-broker.enum';
-import { NestFactory } from '@nestjs/core';
-import { SchedulerModule } from '@scheduler/scheduler.module';
 
 async function bootstrap() {
-  const app = await NestFactory.create(SchedulerModule);
+  const app = await NestFactory.create(QueueWorkerModule);
   const messageBroker = app.get<MessageBrokerService>(MessageBrokerService);
 
   app.connectMicroservice(

@@ -1,29 +1,25 @@
+import { AppConfigService } from '@libs/app-config';
 import { DatabaseService } from '@libs/database';
-import { User } from '@libs/database/models/user.model';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
-import { Cron, CronExpression } from '@nestjs/schedule';
 
 // @ts-expect-error typing error from the library it self
 import * as similarity from 'compute-cosine-similarity';
 import * as moment from 'moment';
 import sequelize from 'sequelize';
-
 @Injectable()
-export class MatchesCandidateGenerator {
+export class UserCandidatesGeneratorService {
   private weightConfig = {
     location: 1,
     university: 1,
     interests: 1,
   };
 
-  private usersPerBatch = 50;
   private matchesCandidatesPerProces = 100;
   private matchedUserCount = 10;
 
   constructor(
-    config: ConfigService<ConfigType>,
     private db: DatabaseService,
+    config: AppConfigService,
   ) {
     this.weightConfig.location = parseFloat(
       config.get('MATCHES_WEIGHT_LOCATION'),
@@ -36,33 +32,13 @@ export class MatchesCandidateGenerator {
     );
   }
 
-  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
-  async populateMatches() {
-    const usersTotal = await this.db.user.count();
+  async generate(userId: number) {
+    const user = await this.db.user.findByPk(userId);
 
-    if (usersTotal === 0) {
+    if (user == null) {
       return;
     }
 
-    const batches = Math.ceil(usersTotal / this.usersPerBatch);
-
-    for (let batch = 1; batch <= batches; batch++) {
-      await this.processGeneration(batch);
-    }
-  }
-
-  async processGeneration(batch: number) {
-    const users = await this.db.user.findAll({
-      limit: this.usersPerBatch,
-      offset: (batch - 1) * this.usersPerBatch,
-    });
-
-    await Promise.all(
-      users.map((item) => this.searchAndPopulateForMatchesCandidate(item)),
-    );
-  }
-
-  async searchAndPopulateForMatchesCandidate(user: User) {
     const today = moment().format('DD-MM-YYYY');
     const candidates = await this.db.user.findAll({
       where: {

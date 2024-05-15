@@ -35,6 +35,12 @@
       ],
       "@libs/app-config/*": [
         "libs/app-config/src/*"
+      ],
+      "@libs/message-broker": [
+        "libs/message-broker/src"
+      ],
+      "@libs/message-broker/*": [
+        "libs/message-broker/src/*"
       ]
     }
   }

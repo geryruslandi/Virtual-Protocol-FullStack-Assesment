@@ -1,6 +1,7 @@
 version: '3'
 services:
   db:
+    container_name: 'db'
     image: postgres:13
     logging:
       driver: none
@@ -13,14 +14,49 @@ services:
     ports:
       - '${DB_PORT}:5432'
   app_dev:
+    container_name: 'app_dev'
     build:
       context: ./
       dockerfile: ./docker/Dockerfile
       target: devRunner
-    command: sh -c "yarn install && yarn start:dev"
+    command: sh -c "yarn install && yarn start:dev core-api"
     volumes:
       - .:/app
     ports:
       - "${APP_PORT}:${APP_PORT}"
     depends_on:
       - db
+  scheduler_dev:
+    container_name: 'scheduler_dev'
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+      target: devRunner
+    volumes:
+      - .:/app
+    command: sh -c "yarn install && yarn start:dev scheduler"
+    depends_on:
+      - db
+      - rabbitmq
+  worker_dev:
+    container_name: 'worker_dev'
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile
+      target: devRunner
+    volumes:
+      - .:/app
+    command: sh -c "yarn install && yarn start:dev queue-worker"
+    depends_on:
+      - db
+      - rabbitmq
+  rabbitmq:
+    image: rabbitmq:3-management-alpine
+    container_name: 'rabbit_mq'
+    ports:
+      - 5672:5672
+      - 15672:15672
+    env_file:
+      - .env
+    volumes:
+      - .docker-compose/rabbitMQ:/var/lib/rabbitmq
