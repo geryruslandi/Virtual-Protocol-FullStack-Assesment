@@ -18,7 +18,24 @@
     "forceConsistentCasingInFileNames": false,
     "noFallthroughCasesInSwitch": false,
     "paths": {
-      "@src/*": ["src/*"],
+      "@api/*": [
+        "apps/core-api/src/*"
+      ],
+      "@scheduler/*": [
+        "apps/scheduler/src/*"
+      ],
+      "@libs/database": [
+        "libs/database/src"
+      ],
+      "@libs/database/*": [
+        "libs/database/src/*"
+      ],
+      "@libs/app-config": [
+        "libs/app-config/src"
+      ],
+      "@libs/app-config/*": [
+        "libs/app-config/src/*"
+      ]
     }
   }
 }

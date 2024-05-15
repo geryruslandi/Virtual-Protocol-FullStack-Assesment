@@ -1,4 +1,4 @@
-import { MatchCandidate } from '@src/models/match-candidate';
+import { MatchCandidate } from '@libs/database/models/match-candidate';
 import { Column, DataType, HasMany, Model, Table } from 'sequelize-typescript';
 
 @Table({ underscored: true })
@@ -22,7 +22,7 @@ export class User extends Model {
   university: string;
 
   @Column(DataType.ARRAY(DataType.STRING))
-  interests: string[];
+  interests: string[]
 
   getOppositeGender() {
     return this.gender === 'male' ? 'female' : 'male';

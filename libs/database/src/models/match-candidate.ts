@@ -1,4 +1,4 @@
-import { User } from '@src/models/user.model';
+import { User } from '@libs/database/models/user.model';
 import {
   BelongsTo,
   Column,

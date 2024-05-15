@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { SwipeEnum } from '@src/matches/matches.enum';
-import { User } from '@src/models/user.model';
+import { SwipeEnum } from '@api/matches/matches.enum';
 import * as moment from 'moment';
+import { User } from '@libs/database/models/user.model';
 
 @Injectable()
 export class MatchesService {

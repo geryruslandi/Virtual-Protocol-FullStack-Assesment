@@ -1,4 +1,4 @@
-type ConfigType = {
+export type ConfigType = {
   APP_PORT: string;
   DB_PORT: string;
   DB_DATABASE: string;

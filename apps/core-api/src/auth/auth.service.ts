@@ -1,17 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { InjectModel } from '@nestjs/sequelize';
-import { LoginDTO, RegisterDTO } from '@src/auth/auth.dto';
-import { User } from '@src/models/user.model';
+import { LoginDTO, RegisterDTO } from '@api/auth/auth.dto';
 import * as bcrypt from 'bcrypt';
+import { DatabaseService } from '@libs/database';
+import { User } from '@libs/database/models/user.model';
+import { AppConfigService } from '@libs/app-config';
 
 @Injectable()
 export class AuthService {
   constructor(
-    @InjectModel(User)
-    private userModel: typeof User,
-    private config: ConfigService<ConfigType>,
+    private db: DatabaseService,
+    private config: AppConfigService,
     private jwt: JwtService,
   ) {}
 
@@ -22,7 +21,7 @@ export class AuthService {
 
     const hashedPassword = await bcrypt.hash(data.password, salt);
 
-    const user = await this.userModel.create({
+    const user = await this.db.user.create({
       ...data,
       password: hashedPassword,
     });
@@ -31,7 +30,7 @@ export class AuthService {
   }
 
   async loginUser(data: LoginDTO): Promise<User | null> {
-    const user = await this.userModel.findOne({
+    const user = await this.db.user.findOne({
       where: {
         username: data.username,
       },

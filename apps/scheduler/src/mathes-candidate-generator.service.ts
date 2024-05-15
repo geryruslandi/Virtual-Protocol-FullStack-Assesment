@@ -1,9 +1,8 @@
+import { DatabaseService } from '@libs/database';
+import { User } from '@libs/database/models/user.model';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Cron, CronExpression } from '@nestjs/schedule';
-import { InjectModel } from '@nestjs/sequelize';
-import { MatchCandidate } from '@src/models/match-candidate';
-import { User } from '@src/models/user.model';
 
 // @ts-expect-error typing error from the library it self
 import * as similarity from 'compute-cosine-similarity';
@@ -24,10 +23,7 @@ export class MatchesCandidateGenerator {
 
   constructor(
     config: ConfigService<ConfigType>,
-    @InjectModel(User)
-    private userModel: typeof User,
-    @InjectModel(MatchCandidate)
-    private matchCandidateModel: typeof MatchCandidate,
+    private db: DatabaseService,
   ) {
     this.weightConfig.location = parseFloat(
       config.get('MATCHES_WEIGHT_LOCATION'),
@@ -42,7 +38,7 @@ export class MatchesCandidateGenerator {
 
   @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
   async populateMatches() {
-    const usersTotal = await this.userModel.count();
+    const usersTotal = await this.db.user.count();
 
     if (usersTotal === 0) {
       return;
@@ -56,7 +52,7 @@ export class MatchesCandidateGenerator {
   }
 
   async processGeneration(batch: number) {
-    const users = await this.userModel.findAll({
+    const users = await this.db.user.findAll({
       limit: this.usersPerBatch,
       offset: (batch - 1) * this.usersPerBatch,
     });
@@ -68,7 +64,7 @@ export class MatchesCandidateGenerator {
 
   async searchAndPopulateForMatchesCandidate(user: User) {
     const today = moment().format('DD-MM-YYYY');
-    const candidates = await this.userModel.findAll({
+    const candidates = await this.db.user.findAll({
       where: {
         gender: user.getOppositeGender(),
       },
@@ -130,7 +126,7 @@ export class MatchesCandidateGenerator {
     const currentBestCandidates = sorted.slice(0, this.matchedUserCount);
 
     const storePromises = currentBestCandidates.map((item) => {
-      return this.matchCandidateModel.create({
+      return this.db.matchCandidate.create({
         user_id: user.id,
         candidate_id: item.user.id,
         score: item.score,

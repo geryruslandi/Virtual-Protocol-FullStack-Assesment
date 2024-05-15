@@ -1,19 +1,17 @@
 import { Module } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthController } from './auth.controller';
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '@src/models/user.model';
 import { JwtModule } from '@nestjs/jwt';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { JwtStrategy } from '@src/auth/jwt.strategy';
+import { JwtStrategy } from '@api/auth/jwt.strategy';
+import { AppConfigService } from '@libs/app-config';
+import { AuthService } from '@api/auth/auth.service';
+import { AuthController } from '@api/auth/auth.controller';
 
 @Module({
   imports: [
-    SequelizeModule.forFeature([User]),
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: async (configService: ConfigService<ConfigType>) => ({
+      useFactory: async (configService: AppConfigService) => ({
         secret: configService.get<string>('JWT_PRIVATE'),
       }),
     }),

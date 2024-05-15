@@ -1,10 +1,10 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '@src/auth/jwt.guard';
-import { CurrentUser } from '@src/auth/user.decorator';
-import { SwipeDTO } from '@src/matches/matches.dto';
-import { MatchesService } from '@src/matches/matches.service';
-import { User } from '@src/models/user.model';
-import { ResponseService } from '@src/utils/response.service';
+import { JwtAuthGuard } from '@api/auth/jwt.guard';
+import { CurrentUser } from '@api/auth/user.decorator';
+import { SwipeDTO } from '@api/matches/matches.dto';
+import { MatchesService } from '@api/matches/matches.service';
+import { ResponseService } from '@api/utils/response.service';
+import { User } from '@libs/database/models/user.model';
 
 @UseGuards(JwtAuthGuard)
 @Controller('matches')
