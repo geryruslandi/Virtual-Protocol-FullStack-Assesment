@@ -6,7 +6,7 @@ There will be three microservices that booted up on this project.
 
 - Api microservic
 - Scheduler microservice
-- Message broker worker
+- Queue worker
 
 All of those services will be communicated through RabbitMQ.
 Each of microservice will have their own docker container. All of those three container will be using the same database and RabbitMQ instance.
