@@ -22,7 +22,7 @@ export class User extends Model {
   university: string;
 
   @Column(DataType.ARRAY(DataType.STRING))
-  interests: string[]
+  interests: string[];
 
   getOppositeGender() {
     return this.gender === 'male' ? 'female' : 'male';

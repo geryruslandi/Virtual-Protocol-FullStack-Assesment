@@ -31,4 +31,13 @@ export class MatchCandidate extends Model {
 
   @BelongsTo(() => User, 'candidate_id')
   candidate!: User;
+
+  toJSON() {
+    return {
+      id: this.id,
+      score: this.score,
+      status: this.status,
+      candidate: this.candidate?.toJSON(),
+    };
+  }
 }
