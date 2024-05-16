@@ -12,6 +12,7 @@ export class MatchesService {
         date: today,
         status: 'pending',
       },
+      order: [['score', 'desc']],
       include: ['candidate'],
     });
 
